@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1h6hupk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform">
+  <bpmn:collaboration id="Collaboration_160fixs">
+    <bpmn:participant id="Participant_0kz2dgj" name="MeuProcesso" processRef="Process_0z2hd9c" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_0z2hd9c" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.getstarted.demo.util.TestExecutionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0uydod5</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_18y2o23">
+      <bpmn:incoming>Flow_0odso0q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0uydod5" sourceRef="StartEvent_1" targetRef="Activity_0mvqabn" />
+    <bpmn:sequenceFlow id="Flow_0gotxtn" sourceRef="Activity_0mvqabn" targetRef="Activity_17to97f" />
+    <bpmn:sequenceFlow id="Flow_0odso0q" sourceRef="Activity_17to97f" targetRef="Event_18y2o23" />
+    <bpmn:userTask id="Activity_0mvqabn" name="Fazer Algo" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="jacosa">${jaca}</camunda:inputParameter>
+          <camunda:inputParameter name="data">${processo.data}</camunda:inputParameter>
+          <camunda:inputParameter name="quantidade">${processo.quantidade}</camunda:inputParameter>
+          <camunda:inputParameter name="nome">${processo.nome}</camunda:inputParameter>
+          <camunda:inputParameter name="cor">${processo.objeto.cor}</camunda:inputParameter>
+          <camunda:inputParameter name="itemLista">${processo.objeto.lista[2]}</camunda:inputParameter>
+          <camunda:inputParameter name="nulo">${processo.objeto.nulo}</camunda:inputParameter>
+          <camunda:inputParameter name="bool">${processo.objeto.bool}</camunda:inputParameter>
+          <camunda:inputParameter name="boolacha">${processo.objeto.bolacha}</camunda:inputParameter>
+          <camunda:inputParameter name="arrayFirstObject→doubleQtd">${processo.objeto.arrObjs[1].qtd}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0uydod5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gotxtn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_17to97f" name="Fazer outra coisa" camunda:assignee="demo">
+      <bpmn:incoming>Flow_0gotxtn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0odso0q</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_160fixs">
+      <bpmndi:BPMNShape id="Participant_0kz2dgj_di" bpmnElement="Participant_0kz2dgj" isHorizontal="true">
+        <dc:Bounds x="120" y="52" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0odso0q_di" bpmnElement="Flow_0odso0q">
+        <di:waypoint x="530" y="177" />
+        <di:waypoint x="592" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gotxtn_di" bpmnElement="Flow_0gotxtn">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="430" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uydod5_di" bpmnElement="Flow_0uydod5">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_18y2o23_di" bpmnElement="Event_18y2o23">
+        <dc:Bounds x="592" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14tkt4g_di" bpmnElement="Activity_0mvqabn">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01mio6q_di" bpmnElement="Activity_17to97f">
+        <dc:Bounds x="430" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

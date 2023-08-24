@@ -1,0 +1,96 @@
+# Externalized Keycloak configuration
+keycloak:
+  # SSO Authentication requests. Send by application as redirect to the browser
+  url.auth: http://keycloak:8080
+  # SSO Token requests. Send from the application to Keycloak
+  url.token: http://keycloak:8080
+  # Keycloak access for the Identity Provider plugin.
+  url.plugin: http://keycloak:8080
+
+  # Keycloak Camunda Identity Client
+  client.id: camunda-identity-service
+  client.secret: ${KC_CLIENT_SECRET}
+
+# Camunda Keycloak Identity Provider Plugin
+plugin.identity.keycloak:
+  keycloakIssuerUrl: ${keycloak.url.plugin}/realms/camunda
+  keycloakAdminUrl: ${keycloak.url.plugin}/admin/realms/camunda
+  clientId: ${keycloak.client.id}
+  clientSecret: ${keycloak.client.secret}
+  useEmailAsCamundaUserId: false
+  useUsernameAsCamundaUserId: true
+  useGroupPathAsCamundaGroupId: true
+  administratorGroupName: camunda-admin
+  disableSSLCertificateValidation: true
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://camunda-database:5432/camunda?stringtype=unspecified
+    username: ${CAMUNDA_POSTGRES_USER}
+    password: ${CAMUNDA_POSTGRES_PASSWORD}
+  jersey:
+    application-path: /engine-rest
+
+camunda:
+#//------------ the engine must not create a user upon startup - the keycloak plugin is responsible for the user system ------------//
+#  admin-user:
+#    id: demo
+#    password: demo
+#    firstName: Demo
+  bpm:
+    history-level: audit
+    authorization:
+      enabled: true
+    filter:
+      create: All tasks
+    webapp.application-path:
+
+server:
+  port: 8091
+  servlet.context-path: /
+
+# Metrics & Health
+management:
+  health.probes.enabled: true
+  endpoints:
+    web.exposure.include: env,health,info,metrics
+
+# Spring Boot Security OAuth2 SSO
+spring.security:
+  oauth2:
+    client:
+      registration:
+        keycloak:
+          provider: keycloak
+          client-id: ${keycloak.client.id}
+          client-secret: ${keycloak.client.secret}
+          authorization-grant-type: authorization_code
+          redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+          scope: openid, profile, email
+      provider:
+        keycloak:
+          issuer-uri: ${keycloak.url.auth}/realms/camunda
+          authorization-uri: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/auth
+          user-info-uri: ${keycloak.url.auth}/realms/camunda/protocol/openid-connect/userinfo
+          token-uri: ${keycloak.url.token}/realms/camunda/protocol/openid-connect/token
+          jwk-set-uri: ${keycloak.url.token}/realms/camunda/protocol/openid-connect/certs
+          # set user-name-attribute one of: 
+          # - sub                -> default; using keycloak ID as camunda user ID
+          # - email              -> useEmailAsCamundaUserId=true
+          # - preferred_username -> useUsernameAsCamundaUserId=true
+          user-name-attribute: email
+
+logging.level.org.springframework.security: DEBUG
+
+# Camunda Rest API
+rest.security:
+  enabled: true
+  provider: keycloak
+  required-audience: camunda-rest-api
